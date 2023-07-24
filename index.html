@@ -149,6 +149,95 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-GPA计算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/24/GPA%E8%AE%A1%E7%AE%97/">数字京师官网上的GPA计算标准的R代码</a>
+    </h1>
+  
+
+        
+        <a href="/2023/07/24/GPA%E8%AE%A1%E7%AE%97/" class="archive-article-date">
+  	<time datetime="2023-07-24T00:52:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"># 首先，你可能需要安装和加载一些必要的R包，如readxl和dplyr</span><br><span class="line">if(!require(readxl)) install.packages(&quot;readxl&quot;)</span><br><span class="line">if(!require(dplyr)) install.packages(&quot;dplyr&quot;)</span><br><span class="line">library(readxl)</span><br><span class="line">library(dplyr)</span><br><span class="line"></span><br><span class="line"># 该函数将百分制成绩转换为绩点成绩</span><br><span class="line">convertPercentageToGPA &lt;- function(percentage)&#123;</span><br><span class="line">  if (percentage &lt; 60) &#123;</span><br><span class="line">    gpa &lt;- 0</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    gpa &lt;- 4 - 3 * ((100 - percentage)^2) / 1600</span><br><span class="line">  &#125;</span><br><span class="line">  return(gpa)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 该函数计算总GPA</span><br><span class="line">calculateGPA &lt;- function(grades, credits)&#123;</span><br><span class="line">  gpas &lt;- sapply(grades, convertPercentageToGPA)</span><br><span class="line">  </span><br><span class="line">  gpa_product &lt;- sum(gpas * credits)</span><br><span class="line">  total_credits &lt;- sum(credits)</span><br><span class="line">  </span><br><span class="line">  return(gpa_product / total_credits)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 从xls文件中读取数据</span><br><span class="line">df &lt;- read_excel(&quot;321.xlsx&quot;, skip = 1)  # 根据实际情况调整文件路径和跳过的行数</span><br><span class="line"></span><br><span class="line"># 提取学分和百分成绩</span><br><span class="line">credits &lt;- df$学分</span><br><span class="line"></span><br><span class="line"># 清理成绩数据，确保所有的成绩都是数字</span><br><span class="line">grades &lt;- df$有效成绩</span><br><span class="line"></span><br><span class="line"># 检查grades和credits是否都是数字类型</span><br><span class="line">grades &lt;- as.numeric(as.character(grades))</span><br><span class="line">credits &lt;- as.numeric(as.character(credits))</span><br><span class="line"></span><br><span class="line"># 清理可能导致问题的NA值</span><br><span class="line">grades[is.na(grades)] &lt;- 0</span><br><span class="line">credits[is.na(credits)] &lt;- 0</span><br><span class="line"></span><br><span class="line"># 计算GPA</span><br><span class="line">gpa &lt;- calculateGPA(grades, credits)</span><br><span class="line"></span><br><span class="line"># 打印GPA</span><br><span class="line">print(gpa)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>使用方法：教务系统打开“毕业事宜”，然后导出成绩，<br>把内容copy到新建的xlsx文档，让xlsx文档和代码处于同一工作路径下。</strong></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/24/GPA%E8%AE%A1%E7%AE%97/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+  
+    <section id="comments" style="margin:10px;padding:10px;background:#fff;">
+      <div id="vcomment" class="comment"></div> 
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+   var notify = 'false' == true ? true : false;
+   var verify = 'false' == true ? true : false;
+    window.onload = function() {
+        new Valine({
+            el: '.comment',
+            notify: notify,
+            verify: verify,
+            app_id: "NY34HCzEhRytuAaI4yNPFbrP-gzGzoHsz",
+            app_key: "tOOh0xJPdVWqQlPKGDIDZXsX",
+            placeholder: "可以在这里评论！",
+            avatar:"mm"
+        });
+    }
+</script>
+    </section>
+  
+
+  
     <article id="post-网络分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -215,13 +304,9 @@
 
 
 
-
-   <section id="comments" class="comments">
-     <style>
-       .comments{margin:30px;padding:10px;background:#fff}
-       @media screen and (max-width:800px){.comments{margin:auto;padding:10px;background:#fff}}
-     </style>
-     <div id="vcomment" class="comment"></div> 
+  
+    <section id="comments" style="margin:10px;padding:10px;background:#fff;">
+      <div id="vcomment" class="comment"></div> 
 <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
 <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
 <script>
@@ -234,15 +319,13 @@
             verify: verify,
             app_id: "NY34HCzEhRytuAaI4yNPFbrP-gzGzoHsz",
             app_key: "tOOh0xJPdVWqQlPKGDIDZXsX",
-            placeholder: "Just go go",
+            placeholder: "可以在这里评论！",
             avatar:"mm"
         });
     }
 </script>
-
- </section>
-
-
+    </section>
+  
 
   
     <article id="post-佳泽的第一篇教学文章" class="article article-type-post  article-index" itemscope itemprop="blogPost">
@@ -308,13 +391,9 @@
 
 
 
-
-   <section id="comments" class="comments">
-     <style>
-       .comments{margin:30px;padding:10px;background:#fff}
-       @media screen and (max-width:800px){.comments{margin:auto;padding:10px;background:#fff}}
-     </style>
-     <div id="vcomment" class="comment"></div> 
+  
+    <section id="comments" style="margin:10px;padding:10px;background:#fff;">
+      <div id="vcomment" class="comment"></div> 
 <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
 <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
 <script>
@@ -327,15 +406,13 @@
             verify: verify,
             app_id: "NY34HCzEhRytuAaI4yNPFbrP-gzGzoHsz",
             app_key: "tOOh0xJPdVWqQlPKGDIDZXsX",
-            placeholder: "Just go go",
+            placeholder: "可以在这里评论！",
             avatar:"mm"
         });
     }
 </script>
-
- </section>
-
-
+    </section>
+  
 
   
   
